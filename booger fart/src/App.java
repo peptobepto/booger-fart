@@ -1,3 +1,12 @@
+import itsc2214.*;
+/**
+ * TODO Write a one-sentence summary of your  here.
+ * TODO Follow it with additional details about its purpose, what abstraction
+ * it represents, and how to use it.
+ * 
+ * @author  TODO Put Your Name in the author tag
+ * @version Jan 27, 2025
+ */
 public class App {
     public static void main(String[] args) throws Exception 
     {
@@ -14,7 +23,8 @@ public class App {
            numCollection.setValue(lastIndex+1, 25);
         }
         catch (IndexOutOfBoundsException x) {
-           System.out.println("Should throw Index out of bounds");
+           throw new IndexOutOfBoundsException("number too big you silly billy poopy woopy uuuhuhuhuhhh");
         } 
     }
 }
+

@@ -1,17 +1,19 @@
 import itsc2214.*;
+import java.util.Random;
+
 /**
- * TODO Write a one-sentence summary of your  here.
- * TODO Follow it with additional details about its purpose, what abstraction
- * it represents, and how to use it.
+ * Class to manage a fixed-size array with operations like adding values,
+ * computing stats, and managing capacity.
  * 
- * @author  Pierce Ransdell
+ * @author Pierce Ransdell
  * @version Jan 23, 2025
  */
 public class Project1 implements ArrayInt {
-    private int[] numCollection;
-    private int capacity;
-    private int size;
+    private int[] numCollection; // Internal array
+    private int capacity;        // Fixed capacity of the array
+    private int size;            // Current number of elements in the array
 
+    // Constructor
     public Project1(int capacity) {
         if (capacity <= 0) {
             throw new IllegalArgumentException("Capacity must be greater than 0.");
@@ -21,75 +23,130 @@ public class Project1 implements ArrayInt {
         this.size = 0; // Start with an empty array
     }
 
-    public int getMinimum(){
-        private int small =0;
-        for(int i = 0; i<numCollection.length; i++){
-            
+    
+    public int getMinimum() {
+        if (size == 0) {
+            return Integer.MIN_VALUE; // Special case: empty array
         }
-        //returns the smallest item in the internal array. Do a loop over the internal array and find the smallest value stored in it. 
-        //This should always return the smallest element stored, the only special case is if the array is empty
-        // in which case this routine should return Integer.MIN_VALUE.
+        int small = numCollection[0];
+        for (int i = 1; i < size; i++) {
+            if (numCollection[i] < small) {
+                small = numCollection[i];
+            }
+        }
+        return small;
     }
-    public int getMaximum(){
-        return 1;
-        //return the largest value in the array
-        //if empty, return "Integer.MAX_VALUE"
+
+    
+    public int getMaximum() {
+        if (size == 0) {
+            return Integer.MAX_VALUE; // Special case: empty array
+        }
+        int large = numCollection[0];
+        for (int i = 1; i < size; i++) {
+            if (numCollection[i] > large) {
+                large = numCollection[i];
+            }
+        }
+        return large;
     }
-    double getAverage(){
-        return 69.420;
-        //should return the average of all numbers in the array
-        //if empty, throw IllegalStateException
+
+    
+    public double getAverage() {
+        if (size == 0) {
+            throw new IllegalStateException("Array is empty. Cannot compute average.");
+        }
+        int sum = 0;
+        for (int i = 0; i < size; i++) {
+            sum += numCollection[i];
+        }
+        return (double) sum / size;
     }
-    public int getValue(int i){
-        return 1;
+
+    
+    public int getRange() {
+        return getMaximum() - getMinimum();
     }
-    int getRange(){
-        return 1;
-        //returns the difference between the smallest and largest values
-        //use getMinimum and getMaximum to make this easy
+
+    @Override
+    public int size() {
+        return size;
     }
-    public int size(){
-        return 1;
-        //return the number of elements in the array
+
+    @Override
+    public int getCapacity() {
+        return capacity;
     }
-    public int getCapacity(){
-        return 16161;
-        //retuns the size of the array, no matter how many elements are in it
+
+    @Override
+    public void addValue(int value) {
+        if (size >= capacity) {
+            throw new IllegalStateException("Array is full.");
+        }
+        numCollection[size] = value;
+        size++;
     }
-    public void addValue(int value){
-        //adds a new value to the array
-        //if doing so overflows the array, throw IllegalStateException
+
+    @Override
+    public int getValue(int index) {
+        if (index < 0 || index >= size) {
+            throw new IndexOutOfBoundsException("Index is out of bounds.");
+        }
+        return numCollection[index];
     }
-    public int setValue(int index, int value){
-        System.out.println("i dip my toes in peanut butter and then lick it off cuz im a freak fr on king von rest in power btw");
-        //sets the value at the position index of the array
-        //cannot grow the array, if index specified is out of bounds
-        //throw an IndexOutOfBoundsException
-        return 1;//it makes me do this. SUPPOSED to be void
+
+
+    @Override
+    public int setValue(int index, int value) {
+        if (index < 0 || index >= size) {
+            throw new IndexOutOfBoundsException("Index is out of bounds.");
+        }
+        int oldValue = numCollection[index]; // Store the old value
+        numCollection[index] = value;       // Set the new value
+        return oldValue;                    // Return the old value
     }
-    public void addRandom(int n){
-        //adds a random set of numbers to the end of the array
-        //if array is full/filled throw "IllegalStateException"
-        //everything went to shit after hawk tuah girl dissapeared
+
+    @Override
+    public void addRandom(int n) {
+        Random rand = new Random();
+        for (int i = 0; i < n; i++) {
+            if (size >= capacity) {
+                throw new IllegalStateException("Array is full.");
+            }
+            addValue(rand.nextInt(100)); // Add random values between 0 and 99
+        }
     }
-    public void removeValueAt(int index){
-        //deletes value at specified locaion
-        //this requries shifting every value after the deleted one down a position
-        //if position is invalid throw IndexOutOfBoundsException
+
+    @Override
+    public void removeValueAt(int index) {
+        if (index < 0 || index >= size) {
+            throw new IndexOutOfBoundsException("Index is out of bounds.");
+        }
+        for (int i = index; i < size - 1; i++) {
+            numCollection[i] = numCollection[i + 1]; // Shift values down
+        }
+        size--;
     }
-    public boolean isEmpty(){
-        //returns true if array is empty
-        //says this already exists in sizedcollection
-        //look at documentation, may not need to write this one
-        return true;
+
+    @Override
+    public boolean isEmpty() {
+        return size == 0;
     }
-    public boolean isFull(){
-        //returns true if array is full
-        //full means size() == capacity()
-        return true;
+
+    @Override
+    public boolean isFull() {
+        return size == capacity;
     }
-    public boolean hasDuplicates(){
-        //returns true if array has duplicates, false otherwise
-        return true;
+
+    @Override
+    public boolean hasDuplicates() {
+        for (int i = 0; i < size; i++) {
+            for (int j = i + 1; j < size; j++) {
+                if (numCollection[i] == numCollection[j]) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }
